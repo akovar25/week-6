@@ -3,11 +3,22 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 
-# Load environment variables from adam.env
+# Setting up access to adam.env to load in the access token
 load_dotenv(dotenv_path="adam.env")
 
+# Genius API interaction class
 class Genius:
     def __init__(self, access_token=None):
+        '''
+        Function to initialize the Genius API client.
+        If no access_token is provided, it will look for ACCESS_CODE in environment variables.
+        
+        Parameters:
+        access_token (str): The access token for the Genius API.
+        
+        Returns:
+        None
+        '''
         # Use token from env if not passed directly
         self.access_token = access_token or os.getenv("ACCESS_CODE")
         self.base_url = "https://api.genius.com"
@@ -16,6 +27,15 @@ class Genius:
         }
 
     def get_artist(self, search_term):
+        '''
+        Function to get a single artist's information from Genius API based on search term.
+        
+        Parameters:
+        search_term (str): The name of the artist to search for.
+        
+        Returns:
+        dict: The artist's information from the Genius API.
+        '''
         # Step 1: Search for the artist
         search_url = f"{self.base_url}/search"
         params = {"q": search_term}
@@ -34,6 +54,15 @@ class Genius:
         return artist_data
 
     def get_artists(self, search_terms):
+        '''
+        Function to get multiple artists' information from Genius API based on a list of search terms.
+        
+        Parameters:
+        search_terms (list): A list of artist names to search for.
+        
+        Returns:
+        pd.DataFrame: A DataFrame containing artist information for each search term.
+        '''
         results = []
 
         for term in search_terms:
